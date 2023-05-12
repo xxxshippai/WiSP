@@ -1,5 +1,6 @@
 import numpy as np
 import glm
+from mesh import Mesh
 
 
 class Figure:
@@ -7,6 +8,10 @@ class Figure:
     def __init__(self, app):
         self.app = app
         self.ctx = app.ctx
+        self.rotation_x = 0
+        self.rotation_y = 1
+        self.rotation_z = 0
+        self.mesh = Mesh()
         self.vbo = self.get_vbo()
         self.shader_program = self.get_shader_program('default')
         self.vao = self.get_vao()
@@ -14,7 +19,12 @@ class Figure:
         self.on_init()
 
     def update(self):
-        m_model = glm.rotate(self.m_model, self.app.time_counter, glm.vec3(self.app.direction_x, self.app.direction_y, 0))
+        # Rotation vector
+        self.rotation_x = float(self.app.command_parsed[4])
+        self.rotation_y = float(self.app.command_parsed[5])
+        self.rotation_z = float(self.app.command_parsed[6])
+        m_model = glm.rotate(self.m_model, self.app.time_counter,
+                             glm.vec3(self.rotation_x, self.rotation_y, self.rotation_z))
         self.shader_program['m_model'].write(m_model)
 
     def get_model_matrix(self):
@@ -41,97 +51,38 @@ class Figure:
         vao = self.ctx.vertex_array(self.shader_program, [(self.vbo, '3f', 'in_position')])
         return vao
 
-    def get_vertex_data(self):
-        if self.app.figure_type == 1:
-            vertices = [(-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1),
-                        (-1, 1, -1), (-1, -1, -1), (1, -1, -1), (1, 1, -1)]
+    def get_mesh(self):
+        # Origin coordinates
+        x = float(self.app.command_parsed[1])
+        y = float(self.app.command_parsed[2])
+        z = float(self.app.command_parsed[3])
 
-            indices = [(0, 2, 3), (0, 1, 2),
-                       (1, 7, 2), (1, 6, 7),
-                       (6, 5, 4), (4, 7, 6),
-                       (3, 4, 5), (3, 5, 0),
-                       (3, 7, 4), (3, 2, 7),
-                       (0, 6, 1), (0, 5, 6)]
+        if self.app.command_parsed[0] == "cuboid" and self.app.override_flag == 0:
+            vertex_data = self.mesh.get_vertex_data_cuboid(x, y, z,
+                                                           float(self.app.command_parsed[7]),
+                                                           float(self.app.command_parsed[8]),
+                                                           float(self.app.command_parsed[9]))
+        elif self.app.command_parsed[0] == "pyramid" and self.app.override_flag == 0 :
+            vertex_data = self.mesh.get_vertex_data_pyramid(x, y, z,
+                                                            float(self.app.command_parsed[7]),
+                                                            float(self.app.command_parsed[8]))
+        elif self.app.command_parsed[0] == "cylinder" and self.app.override_flag == 0:
+            vertex_data = self.mesh.get_vertex_data_cylinder(x, y, z,
+                                                             float(self.app.command_parsed[7]),
+                                                             float(self.app.command_parsed[8]))
+        elif self.app.command_parsed[0] == "cone" and self.app.override_flag == 0:
+            vertex_data = self.mesh.get_vertex_data_cone(x, y, z,
+                                                         float(self.app.command_parsed[7]),
+                                                         float(self.app.command_parsed[8]))
+        elif self.app.figure_type == 1:
+            vertex_data = self.mesh.get_vertex_data_cuboid(0, 0, 0, 2, 2, 2)
         elif self.app.figure_type == 2:
-            vertices = [(-1, -1, 1), (1, -1, 1),
-                        (1, -1, -1), (-1, -1, -1),
-                        (0, 1, 0)]
-
-            indices = [(0, 1, 2), (0, 2, 3),
-                       (0, 1, 4), (1, 2, 4),
-                       (2, 3, 4), (3, 0, 4)]
-
+            vertex_data = self.mesh.get_vertex_data_pyramid(0, 0, 0, 2, 2)
         elif self.app.figure_type == 3:
-            vertices = []
-            indices = []
-
-            angle_increment = 360. / 40
-            angle_increment *= np.pi / 180.
-
-            angle = 0.
-            h = 0
-
-            # Vertices handling
-            for j in range(80):
-                vertices.append((1 * np.cos(angle), -1 + h, 1 * np.sin(angle)))
-                if j == 39:
-                    h = 2
-
-                angle += angle_increment
-
-            vertices.append((0, 0, -1))
-            vertices.append((0, 0, 1))
-
-            # Indices handling
-            for i in range(39):
-                indices.append((0 + i, 1 + i, 41 + i))
-                indices.append((0 + i, 41 + i, 40 + i))
-
-            indices.append((39, 0, 40))
-            indices.append((39, 40, 79))
-
-            # Base
-            for i in range(39):
-                indices.append((0 + i, 1 + i, 80))
-            indices.append((39, 0, 80))
-            # Top
-            for j in range(39):
-                indices.append((40 + i, 41 + i, 81))
-            indices.append((79, 40, 81))
-
+            vertex_data = self.mesh.get_vertex_data_cylinder(0, 0, 0, 1, 2)
         elif self.app.figure_type == 4:
-            vertices = []
-            indices = []
+            vertex_data = self.mesh.get_vertex_data_cone(0, 0, 0, 1, 2)
 
-            angle_increment = 360. / 40
-            angle_increment *= np.pi / 180.
-
-            angle = 0.
-            h = 0
-
-            # Vertices handling
-            for j in range(40):
-                vertices.append((1 * np.cos(angle), -1 + h, 1 * np.sin(angle)))
-                if j == 39:
-                    h = 2
-
-                angle += angle_increment
-
-            vertices.append((0, -1, 0))
-            vertices.append((0, 1, 0))
-
-            # Indices handling
-            for i in range(39):
-                indices.append((0 + i, 1 + i, 41))
-
-            indices.append((39, 0, 41))
-
-            # Base
-            for i in range(39):
-                indices.append((0 + i, 1 + i, 40))
-            indices.append((39, 0, 40))
-
-        vertex_data = self.get_data(vertices, indices)
         return vertex_data
 
     @staticmethod
@@ -141,7 +92,7 @@ class Figure:
 
     # Vertex buffer object definition
     def get_vbo(self):
-        vertex_data = self.get_vertex_data()
+        vertex_data = self.get_mesh()
         vbo = self.ctx.buffer(vertex_data)
         return vbo
 

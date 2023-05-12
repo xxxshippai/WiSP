@@ -3,6 +3,7 @@ import moderngl as mgl
 import sys
 from model import *
 from camera import Camera
+from command import CommandHandler
 
 
 class GraphicsEngine:
@@ -20,15 +21,20 @@ class GraphicsEngine:
         # Create clock
         self.clock = pg.time.Clock()
         self.time = 0
-        self.rotation_flag = 1
+        # Command handler
+        self.command = CommandHandler(self)
+        self.rotation_flag = 0
         self.time_counter = 0
-        self.figure_type = 1
-        self.direction_x = 1
-        self.direction_y = 1
+        self.figure_type = 0
+        self.override_flag = 0
+        self.command_parsed = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.command_read = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.command_parsed = self.command.split_command(self.command_parsed)
         # Camera
         self.camera = Camera(self)
         # Scene
         self.scene = Figure(self)
+
 
     def check_events(self):
         for event in pg.event.get():
@@ -41,45 +47,32 @@ class GraphicsEngine:
                 self.rotation_flag = not self.rotation_flag
 
             elif event.type == pg.KEYDOWN and event.key == pg.K_1:
-                self.scene.destroy()
+                self.override_flag = 1
                 self.figure_type = 1
-                self.scene = Figure(self)
+                self.keydown_selection()
 
             elif event.type == pg.KEYDOWN and event.key == pg.K_2:
-                self.scene.destroy()
+                self.override_flag = 1
                 self.figure_type = 2
-                self.scene = Figure(self)
+                self.keydown_selection()
 
             elif event.type == pg.KEYDOWN and event.key == pg.K_3:
-                self.scene.destroy()
+                self.override_flag = 1
                 self.figure_type = 3
-                self.scene = Figure(self)
+                self.keydown_selection()
 
             elif event.type == pg.KEYDOWN and event.key == pg.K_4:
-                self.scene.destroy()
+                self.override_flag = 1
                 self.figure_type = 4
+                self.keydown_selection()
+
+            elif event.type == pg.KEYDOWN and event.key == pg.K_t:
+                command_unparsed = input("\n<figure type> <origin coordinates> <rotation> <dimensions>  \n")
+                self.command_read = self.command.command_handler(command_unparsed)
+                if self.command_read[0] != "-":
+                    self.command_parsed = self.command_read
+                self.override_flag = 0
                 self.scene = Figure(self)
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_d:
-                self.scene.destroy()
-                self.figure_type = 0
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_RIGHT:
-                self.direction_y = 1
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_LEFT:
-                self.direction_y = -1
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_UP:
-                self.direction_x = 1
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_DOWN:
-                self.direction_x = -1
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_c:
-                self.direction_x = 0
-                self.direction_y = 1
-
 
     def render(self):
         # Clearing frame buffer
@@ -100,6 +93,14 @@ class GraphicsEngine:
             self.render()
             self.clock.tick(60)
 
+    def keydown_selection(self):
+
+        self.scene.destroy()
+        self.scene = Figure(self)
+
+        self.command_parsed[4] = "0"
+        self.command_parsed[5] = "1"
+        self.command_parsed[6] = "0"
 
 if __name__ == '__main__':
     app = GraphicsEngine()
