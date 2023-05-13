@@ -26,6 +26,7 @@ class Figure:
         m_model = glm.rotate(self.m_model, self.app.time_counter,
                              glm.vec3(self.rotation_x, self.rotation_y, self.rotation_z))
         self.shader_program['m_model'].write(m_model)
+        self.shader_program['color'].write(self.app.figure_color)
 
     def get_model_matrix(self):
         m_model = glm.mat4()
@@ -36,6 +37,7 @@ class Figure:
         self.shader_program['m_proj'].write(self.app.camera.m_proj)
         self.shader_program['m_view'].write(self.app.camera.m_view)
         self.shader_program['m_model'].write(self.m_model)
+        self.shader_program['color'].write(self.app.figure_color)
 
     def render(self):
         self.update()

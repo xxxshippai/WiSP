@@ -1,6 +1,8 @@
 import pygame as pg
 import moderngl as mgl
 import sys
+import numpy as np
+import glm
 from model import *
 from camera import Camera
 from command import CommandHandler
@@ -29,12 +31,13 @@ class GraphicsEngine:
         self.override_flag = 0
         self.command_parsed = "cuboid 0 0 0 0 1 0 2 2 2"
         self.command_read = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.figure_color_flag = 0
+        self.figure_color = glm.vec3(1, 0, 0)
         self.command_parsed = self.command.split_command(self.command_parsed)
         # Camera
         self.camera = Camera(self)
         # Scene
         self.scene = Figure(self)
-
 
     def check_events(self):
         for event in pg.event.get():
@@ -71,6 +74,11 @@ class GraphicsEngine:
                 self.command_read = self.command.command_handler(command_unparsed)
                 if self.command_read[0] != "-":
                     self.command_parsed = self.command_read
+                if self.figure_color_flag == 1:
+                    self.figure_color = glm.vec3(float(self.command_read[2]),
+                                                 float(self.command_read[3]),
+                                                 float(self.command_read[4]))
+                    self.figure_color_flag = 0
                 self.override_flag = 0
                 self.scene = Figure(self)
 
@@ -101,6 +109,7 @@ class GraphicsEngine:
         self.command_parsed[4] = "0"
         self.command_parsed[5] = "1"
         self.command_parsed[6] = "0"
+
 
 if __name__ == '__main__':
     app = GraphicsEngine()
