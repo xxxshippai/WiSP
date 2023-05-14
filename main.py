@@ -82,6 +82,9 @@ class GraphicsEngine:
                 self.override_flag = 0
                 self.scene = Figure(self)
 
+            elif event.type == pg.KEYDOWN and event.key == pg.K_u:
+                self.scene = Figure(self)
+
     def render(self):
         # Clearing frame buffer
         self.ctx.clear(color=(0.1, 0.1, 0.1))
