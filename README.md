@@ -9,9 +9,9 @@ R - start stop rotation
 FIGURES SET TO BUTTONS HAVE PRESET DIMENSIONS AND POSITIONS
 
 Commands:
-<figure> <origin position> <rotation> <dimensions> - main figure creation command
-- rotate moving <rotation vector> - continuous rotation  on set axis
-- rotate static <add/origin> <rotation vector> <angle> - rotate by angle, either from original position, or additive to previous rotation
-- move <move vector> - move figure by vector
-- color <rgb vector> - change figure color
-- figure <figure type> - change figure without changing dimensions
+"figure" "origin position" "rotation" "dimensions" - main figure creation command
+- rotate moving "rotation vector" - continuous rotation  on set axis
+- rotate static "add/origin" "rotation vector" "angle" - rotate by angle, either from original position, or additive to previous rotation
+- move "move vector" - move figure by vector
+- color "rgb vector" - change figure color
+- figure "figure type" - change figure without changing dimesions
