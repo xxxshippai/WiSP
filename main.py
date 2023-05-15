@@ -29,8 +29,8 @@ class GraphicsEngine:
         self.time_counter = 0
         self.figure_type = 0
         self.override_flag = 0
-        self.command_parsed = "cuboid 0 0 0 0 1 0 2 2 2"
-        self.command_read = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.command_parsed = "sphere 0 0 0 0 1 0 2 10"
+        self.command_read = "sphere 0 0 0 0 1 0 2 10"
         self.figure_color_flag = 0
         self.figure_color = glm.vec3(1, 0, 0)
         self.command_parsed = self.command.split_command(self.command_parsed)

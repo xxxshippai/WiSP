@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -113,6 +115,36 @@ class Mesh:
         for i in range(39):
             indices.append((0 + i, 1 + i, 40))
         indices.append((39, 0, 40))
+
+        # Parse indice and vertice data together
+        vertex_data = self.get_data(vertices, indices)
+        return vertex_data
+
+    def get_vertex_data_sphere(self, x=0, y=0, z=0, radius=1, acc=2):
+        vertices = []
+        for lat in range(int(acc) + 1):
+            theta = lat * math.pi / acc
+            sin_theta = math.sin(theta)
+            cos_theta = math.cos(theta)
+
+            for lon in range(int(acc) * 2 + 1):
+                phi = lon * 2 * math.pi / (acc * 2)
+                sin_phi = math.sin(phi)
+                cos_phi = math.cos(phi)
+
+                x_p = x + radius * sin_theta * cos_phi
+                y_p = y + radius * sin_theta * sin_phi
+                z_p = z + radius * cos_theta
+
+                vertices.append((x_p, y_p, z_p))
+
+        indices = []
+        for lat in range(int(acc)):
+            for lon in range(int(acc) * 2):
+                first = lat * (acc * 2 + 1) + lon
+                second = first + (acc * 2 + 1)
+                indices.append((first, second, second + 1))
+                indices.append((first, second + 1, first + 1))
 
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)

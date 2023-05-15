@@ -64,7 +64,7 @@ class Figure:
                                                            float(self.app.command_parsed[7]),
                                                            float(self.app.command_parsed[8]),
                                                            float(self.app.command_parsed[9]))
-        elif self.app.command_parsed[0] == "pyramid" and self.app.override_flag == 0 :
+        elif self.app.command_parsed[0] == "pyramid" and self.app.override_flag == 0:
             vertex_data = self.mesh.get_vertex_data_pyramid(x, y, z,
                                                             float(self.app.command_parsed[7]),
                                                             float(self.app.command_parsed[8]))
@@ -76,6 +76,10 @@ class Figure:
             vertex_data = self.mesh.get_vertex_data_cone(x, y, z,
                                                          float(self.app.command_parsed[7]),
                                                          float(self.app.command_parsed[8]))
+        elif self.app.command_parsed[0] == "sphere" and self.app.override_flag == 0:
+            vertex_data = self.mesh.get_vertex_data_sphere(x, y, z,
+                                                         int(self.app.command_parsed[7]),
+                                                         int(self.app.command_parsed[8]))
         elif self.app.figure_type == 1:
             vertex_data = self.mesh.get_vertex_data_cuboid(0, 0, 0, 2, 2, 2)
         elif self.app.figure_type == 2:
