@@ -1,5 +1,7 @@
 import shlex
 import numpy as np
+import glm
+from camera import Camera
 
 
 class CommandHandler:
@@ -61,11 +63,16 @@ class CommandHandler:
                 self.app.command_parsed[3] = command_parsed[4]
 
             elif command_parsed[1] == "color":
-                self.app.figure_color_flag = 1
+                self.app.figure_color = glm.vec3(float(command_parsed[2]),
+                                                 float(command_parsed[3]),
+                                                 float(command_parsed[4]))
 
             elif command_parsed[1] == "figure":
                 self.app.command_parsed[0] = command_parsed[2]
 
-
+            elif command_parsed[1] == "camera":
+                self.app.projection_type = int(command_parsed[2])
+                self.app.camera_near = float(command_parsed[3])
+                self.app.camera_far = float(command_parsed[4])
 
         return list(command_parsed)

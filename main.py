@@ -25,17 +25,24 @@ class GraphicsEngine:
         self.time = 0
         # Command handler
         self.command = CommandHandler(self)
+        # Flags
+        self.projection_type = 1
         self.rotation_flag = 0
-        self.time_counter = 0
-        self.figure_type = 0
+        self.figure_color_flag = 0
         self.override_flag = 0
+        self.figure_type = 0
+        # Counters
+        self.time_counter = 0
+        # Strings
         self.command_parsed = "sphere 0 0 0 0 1 0 2 10"
         self.command_read = "sphere 0 0 0 0 1 0 2 10"
-        self.figure_color_flag = 0
-        self.figure_color = glm.vec3(1, 0, 0)
         self.command_parsed = self.command.split_command(self.command_parsed)
+        # Variables
+        self.figure_color = glm.vec3(1, 0, 0)
+        self.camera_near = 0.1
+        self.camera_far = 100
         # Camera
-        self.camera = Camera(self)
+        self.camera = Camera(self, self.projection_type, self.camera_near, self.camera_far)
         # Scene
         self.scene = Figure(self)
 
@@ -49,40 +56,17 @@ class GraphicsEngine:
             elif event.type == pg.KEYDOWN and event.key == pg.K_r:
                 self.rotation_flag = not self.rotation_flag
 
-            elif event.type == pg.KEYDOWN and event.key == pg.K_1:
-                self.override_flag = 1
-                self.figure_type = 1
-                self.keydown_selection()
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_2:
-                self.override_flag = 1
-                self.figure_type = 2
-                self.keydown_selection()
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_3:
-                self.override_flag = 1
-                self.figure_type = 3
-                self.keydown_selection()
-
-            elif event.type == pg.KEYDOWN and event.key == pg.K_4:
-                self.override_flag = 1
-                self.figure_type = 4
-                self.keydown_selection()
-
             elif event.type == pg.KEYDOWN and event.key == pg.K_t:
                 command_unparsed = input("\n<figure type> <origin coordinates> <rotation> <dimensions>  \n")
                 self.command_read = self.command.command_handler(command_unparsed)
                 if self.command_read[0] != "-":
                     self.command_parsed = self.command_read
-                if self.figure_color_flag == 1:
-                    self.figure_color = glm.vec3(float(self.command_read[2]),
-                                                 float(self.command_read[3]),
-                                                 float(self.command_read[4]))
-                    self.figure_color_flag = 0
                 self.override_flag = 0
+                self.camera = Camera(self, self.projection_type, self.camera_near, self.camera_far)
                 self.scene = Figure(self)
 
             elif event.type == pg.KEYDOWN and event.key == pg.K_u:
+                self.camera = Camera(self, self.projection_type, self.camera_near, self.camera_far)
                 self.scene = Figure(self)
 
     def render(self):
