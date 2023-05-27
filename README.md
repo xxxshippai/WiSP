@@ -5,7 +5,10 @@ Launch main for tasks 2-4
 
 Keybinds:
 - R - start stop rotation
-- 1-4 - figure types
+- T - command input
+- U - manual update
+- W,A,S,D - camera movement
+- Mouse - camera pitch/yaw
 
 FIGURES SET TO BUTTONS HAVE PRESET DIMENSIONS AND POSITIONS
 
