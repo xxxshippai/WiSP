@@ -11,6 +11,7 @@ class Figure:
         self.rotation_x = 0
         self.rotation_y = 1
         self.rotation_z = 0
+        self.cached_vertex = 0
         self.mesh = Mesh()
         self.vbo = self.get_vbo()
         self.shader_program = self.get_shader_program('default')
@@ -26,6 +27,7 @@ class Figure:
         m_model = glm.rotate(self.m_model, self.app.time_counter,
                              glm.vec3(self.rotation_x, self.rotation_y, self.rotation_z))
         self.shader_program['m_model'].write(m_model)
+        self.shader_program['m_view'].write(self.app.camera.m_view)
         self.shader_program['color'].write(self.app.figure_color)
 
     def get_model_matrix(self):
@@ -59,36 +61,38 @@ class Figure:
         y = float(self.app.command_parsed[2])
         z = float(self.app.command_parsed[3])
 
-        if self.app.command_parsed[0] == "cuboid" and self.app.override_flag == 0:
+        # Create prefab structures
+        if self.app.command_parsed[0] == "cuboid":
             vertex_data = self.mesh.get_vertex_data_cuboid(x, y, z,
                                                            float(self.app.command_parsed[7]),
                                                            float(self.app.command_parsed[8]),
                                                            float(self.app.command_parsed[9]))
-        elif self.app.command_parsed[0] == "pyramid" and self.app.override_flag == 0:
+        elif self.app.command_parsed[0] == "pyramid":
             vertex_data = self.mesh.get_vertex_data_pyramid(x, y, z,
                                                             float(self.app.command_parsed[7]),
                                                             float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "cylinder" and self.app.override_flag == 0:
+        elif self.app.command_parsed[0] == "cylinder":
             vertex_data = self.mesh.get_vertex_data_cylinder(x, y, z,
                                                              float(self.app.command_parsed[7]),
                                                              float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "cone" and self.app.override_flag == 0:
+        elif self.app.command_parsed[0] == "cone":
             vertex_data = self.mesh.get_vertex_data_cone(x, y, z,
                                                          float(self.app.command_parsed[7]),
                                                          float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "sphere" and self.app.override_flag == 0:
+        elif self.app.command_parsed[0] == "sphere":
             vertex_data = self.mesh.get_vertex_data_sphere(x, y, z,
-                                                         int(self.app.command_parsed[7]),
-                                                         int(self.app.command_parsed[8]))
-        elif self.app.figure_type == 1:
-            vertex_data = self.mesh.get_vertex_data_cuboid(0, 0, 0, 2, 2, 2)
-        elif self.app.figure_type == 2:
-            vertex_data = self.mesh.get_vertex_data_pyramid(0, 0, 0, 2, 2)
-        elif self.app.figure_type == 3:
-            vertex_data = self.mesh.get_vertex_data_cylinder(0, 0, 0, 1, 2)
-        elif self.app.figure_type == 4:
-            vertex_data = self.mesh.get_vertex_data_cone(0, 0, 0, 1, 2)
+                                                           int(self.app.command_parsed[7]),
+                                                           int(self.app.command_parsed[8]))
 
+        # Load structures from file
+        elif self.app.command_parsed[0] == "load":
+            vertex_data = self.mesh.load_vertex_data(x, y, z)
+        elif self.app.command_parsed[0] == "save":
+            file_name = self.app.command_parsed[1]
+            self.mesh.save_vertex_data(file_name)
+
+        # Cache vertex
+        self.cached_vertex = vertex_data
         return vertex_data
 
     @staticmethod

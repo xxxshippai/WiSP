@@ -18,19 +18,21 @@ class GraphicsEngine:
         pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
         # Create context
         pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
+        # PyGame events
+        pg.event.set_grab(True)
+        pg.mouse.set_visible(False)
         # Detect context with pygame
         self.ctx = mgl.create_context()
         # Create clock
         self.clock = pg.time.Clock()
         self.time = 0
+        self.delta_time = 0
         # Command handler
         self.command = CommandHandler(self)
         # Flags
         self.projection_type = 1
         self.rotation_flag = 0
         self.figure_color_flag = 0
-        self.override_flag = 0
-        self.figure_type = 0
         # Counters
         self.time_counter = 0
         # Strings
@@ -61,7 +63,6 @@ class GraphicsEngine:
                 self.command_read = self.command.command_handler(command_unparsed)
                 if self.command_read[0] != "-":
                     self.command_parsed = self.command_read
-                self.override_flag = 0
                 self.camera = Camera(self, self.projection_type, self.camera_near, self.camera_far)
                 self.scene = Figure(self)
 
@@ -85,8 +86,10 @@ class GraphicsEngine:
         while True:
             self.get_time()
             self.check_events()
+            self.camera.update()
             self.render()
             self.clock.tick(60)
+            self.delta_time = self.clock.tick(60)
 
     def keydown_selection(self):
 

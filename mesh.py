@@ -4,7 +4,6 @@ import numpy as np
 
 
 class Mesh:
-
     def get_vertex_data_cuboid(self, x=0, y=0, z=0, a=2, b=2, c=2):
         vertices = [(x + -(a / 2), y + -(b / 2), z + (c / 2)),
                     (x + (a / 2), y + -(b / 2), z + (c / 2)),
@@ -149,6 +148,12 @@ class Mesh:
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
+
+    def load_vertex_data(self, x=0, y=0, z=0):
+        ...
+
+    def save_vertex_data(self, file_name="figure"):
+        ...
 
     @staticmethod
     def get_data(vertices, indices):
