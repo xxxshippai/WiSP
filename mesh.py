@@ -1,9 +1,13 @@
 import math
-
+import shlex
 import numpy as np
+import glm
 
 
 class Mesh:
+    def __init__(self, app):
+        self.app = app
+
     def get_vertex_data_cuboid(self, x=0, y=0, z=0, a=2, b=2, c=2):
         vertices = [(x + -(a / 2), y + -(b / 2), z + (c / 2)),
                     (x + (a / 2), y + -(b / 2), z + (c / 2)),
@@ -21,6 +25,7 @@ class Mesh:
                    (3, 7, 4), (3, 2, 7),
                    (0, 6, 1), (0, 5, 6)]
 
+        self.cache_vertex_data(vertices, indices)
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
 
@@ -35,6 +40,7 @@ class Mesh:
                    (0, 1, 4), (1, 2, 4),
                    (2, 3, 4), (3, 0, 4)]
 
+        self.cache_vertex_data(vertices, indices)
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
@@ -80,6 +86,7 @@ class Mesh:
             indices.append((40 + j, 41 + j, 81))
         indices.append((79, 40, 81))
 
+        self.cache_vertex_data(vertices, indices)
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
@@ -115,6 +122,7 @@ class Mesh:
             indices.append((0 + i, 1 + i, 40))
         indices.append((39, 0, 40))
 
+        self.cache_vertex_data(vertices, indices)
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
@@ -145,15 +153,66 @@ class Mesh:
                 indices.append((first, second, second + 1))
                 indices.append((first, second + 1, first + 1))
 
+        self.cache_vertex_data(vertices, indices)
         # Parse indice and vertice data together
         vertex_data = self.get_data(vertices, indices)
         return vertex_data
 
-    def load_vertex_data(self, x=0, y=0, z=0):
-        ...
+    def load_vertex_data(self, file_name="figure", x=0, y=0, z=0):
+        file_n = file_name + ".txt"
+        file = open(file_n, 'r')
+        lines = file.read()
+        lines = lines.split(" # ")
+        vertices = lines[0]
+        indices = lines[1]
+        color = lines[2]
+        # Apply color
+        color = color.split(" ")
+        self.app.figure_color = glm.vec3(float(color[0]),
+                                         float(color[1]),
+                                         float(color[2]))
+        vertices, indices = self.unpack_data(vertices, indices)
+        self.cache_vertex_data(vertices, indices)
+        file.close()
+        vertex_data = self.get_data(vertices, indices)
+        return vertex_data
 
-    def save_vertex_data(self, file_name="figure"):
-        ...
+    def save_vertex_data(self, file_name="figure", vertex_data=""):
+        file_n = file_name + ".txt"
+        file = open(file_n, 'w+')
+        file.write(("" + vertex_data))
+        file.close()
+        return
+
+    def cache_vertex_data(self, vertices, indices):
+        vertices_processed = []
+        indices_processed = []
+        for i in range(len(vertices)):
+            vertices_subprocess = ' '.join(str(e) for e in vertices[i]) + " \" "
+            vertices_processed.append(vertices_subprocess)
+        for i in range(len(indices)):
+            indices_subprocess = ' '.join(str(e) for e in indices[i]) + " \" "
+            indices_processed.append(indices_subprocess)
+        self.app.cached_vertex = ""
+        self.app.cached_vertex += (''.join(vertices_processed)[:-2] + " # ")
+        self.app.cached_vertex += (''.join(indices_processed)[:-2] + " # ")
+        self.app.cached_vertex += ("" + str(self.app.figure_color[0])
+                                   + " " + str(self.app.figure_color[1])
+                                   + " " + str(self.app.figure_color[2]) + "")
+        return
+
+    def unpack_data(self, vertices, indices):
+        vertices_processed = []
+        indices_processed = []
+        vertices = vertices.split(" \" ")
+        indices = indices.split(" \" ")
+        for i in range(len(vertices)):
+            split_content = vertices[i].split(" ")
+            vertices_processed.append((float(split_content[0]), float(split_content[1]), float(split_content[2])))
+        for j in range(len(indices)):
+            split_content = indices[j].split(" ")
+            indices_processed.append((int(split_content[0]), int(split_content[1]), int(split_content[2])))
+        return vertices_processed, indices_processed
 
     @staticmethod
     def get_data(vertices, indices):

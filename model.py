@@ -11,8 +11,7 @@ class Figure:
         self.rotation_x = 0
         self.rotation_y = 1
         self.rotation_z = 0
-        self.cached_vertex = 0
-        self.mesh = Mesh()
+        self.mesh = Mesh(self.app)
         self.vbo = self.get_vbo()
         self.shader_program = self.get_shader_program('default')
         self.vao = self.get_vao()
@@ -61,38 +60,40 @@ class Figure:
         y = float(self.app.command_parsed[2])
         z = float(self.app.command_parsed[3])
 
-        # Create prefab structures
-        if self.app.command_parsed[0] == "cuboid":
-            vertex_data = self.mesh.get_vertex_data_cuboid(x, y, z,
-                                                           float(self.app.command_parsed[7]),
-                                                           float(self.app.command_parsed[8]),
-                                                           float(self.app.command_parsed[9]))
-        elif self.app.command_parsed[0] == "pyramid":
-            vertex_data = self.mesh.get_vertex_data_pyramid(x, y, z,
-                                                            float(self.app.command_parsed[7]),
-                                                            float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "cylinder":
-            vertex_data = self.mesh.get_vertex_data_cylinder(x, y, z,
+        if self.app.figure_loaded == 0:
+            # Create prefab structures
+            if self.app.command_parsed[0] == "cuboid":
+                vertex_data = self.mesh.get_vertex_data_cuboid(x, y, z,
+                                                               float(self.app.command_parsed[7]),
+                                                               float(self.app.command_parsed[8]),
+                                                               float(self.app.command_parsed[9]))
+            elif self.app.command_parsed[0] == "pyramid":
+                vertex_data = self.mesh.get_vertex_data_pyramid(x, y, z,
+                                                                float(self.app.command_parsed[7]),
+                                                                float(self.app.command_parsed[8]))
+            elif self.app.command_parsed[0] == "cylinder":
+                vertex_data = self.mesh.get_vertex_data_cylinder(x, y, z,
+                                                                 float(self.app.command_parsed[7]),
+                                                                 float(self.app.command_parsed[8]))
+            elif self.app.command_parsed[0] == "cone":
+                vertex_data = self.mesh.get_vertex_data_cone(x, y, z,
                                                              float(self.app.command_parsed[7]),
                                                              float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "cone":
-            vertex_data = self.mesh.get_vertex_data_cone(x, y, z,
-                                                         float(self.app.command_parsed[7]),
-                                                         float(self.app.command_parsed[8]))
-        elif self.app.command_parsed[0] == "sphere":
-            vertex_data = self.mesh.get_vertex_data_sphere(x, y, z,
-                                                           int(self.app.command_parsed[7]),
-                                                           int(self.app.command_parsed[8]))
+            elif self.app.command_parsed[0] == "sphere":
+                vertex_data = self.mesh.get_vertex_data_sphere(x, y, z,
+                                                               int(self.app.command_parsed[7]),
+                                                               int(self.app.command_parsed[8]))
+        elif self.app.figure_loaded == 1:
+            # Load structures from file
+            if self.app.command_read[1] == "load":
+                file_name = self.app.command_read[2]
+                vertex_data = self.mesh.load_vertex_data(file_name, x, y, z)
 
-        # Load structures from file
-        elif self.app.command_parsed[0] == "load":
-            vertex_data = self.mesh.load_vertex_data(x, y, z)
-        elif self.app.command_parsed[0] == "save":
-            file_name = self.app.command_parsed[1]
-            self.mesh.save_vertex_data(file_name)
+        if self.app.command_read[1] == "save":
+            print("Saving")
+            file_name = self.app.command_read[2]
+            self.mesh.save_vertex_data(file_name, self.app.cached_vertex)
 
-        # Cache vertex
-        self.cached_vertex = vertex_data
         return vertex_data
 
     @staticmethod

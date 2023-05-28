@@ -33,11 +33,13 @@ class GraphicsEngine:
         self.projection_type = 1
         self.rotation_flag = 0
         self.figure_color_flag = 0
+        self.figure_loaded = 0
         # Counters
         self.time_counter = 0
         # Strings
-        self.command_parsed = "sphere 0 0 0 0 1 0 2 10"
-        self.command_read = "sphere 0 0 0 0 1 0 2 10"
+        self.command_parsed = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.command_read = "cuboid 0 0 0 0 1 0 2 2 2"
+        self.cached_vertex = ""
         self.command_parsed = self.command.split_command(self.command_parsed)
         # Variables
         self.figure_color = glm.vec3(1, 0, 0)
@@ -62,6 +64,7 @@ class GraphicsEngine:
                 command_unparsed = input("\n<figure type> <origin coordinates> <rotation> <dimensions>  \n")
                 self.command_read = self.command.command_handler(command_unparsed)
                 if self.command_read[0] != "-":
+                    self.figure_loaded = 0
                     self.command_parsed = self.command_read
                 self.camera = Camera(self, self.projection_type, self.camera_near, self.camera_far)
                 self.scene = Figure(self)

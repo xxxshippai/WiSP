@@ -75,4 +75,7 @@ class CommandHandler:
                 self.app.camera_near = float(command_parsed[3])
                 self.app.camera_far = float(command_parsed[4])
 
+            if command_parsed[1] == "load":
+                self.app.figure_loaded = 1
+
         return list(command_parsed)
