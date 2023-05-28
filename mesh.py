@@ -171,7 +171,7 @@ class Mesh:
         self.app.figure_color = glm.vec3(float(color[0]),
                                          float(color[1]),
                                          float(color[2]))
-        vertices, indices = self.unpack_data(vertices, indices)
+        vertices, indices = self.unpack_data(vertices, indices, x, y, z)
         self.cache_vertex_data(vertices, indices)
         file.close()
         vertex_data = self.get_data(vertices, indices)
@@ -201,14 +201,14 @@ class Mesh:
                                    + " " + str(self.app.figure_color[2]) + "")
         return
 
-    def unpack_data(self, vertices, indices):
+    def unpack_data(self, vertices, indices, x=0, y=0 ,z=0):
         vertices_processed = []
         indices_processed = []
         vertices = vertices.split(" \" ")
         indices = indices.split(" \" ")
         for i in range(len(vertices)):
             split_content = vertices[i].split(" ")
-            vertices_processed.append((float(split_content[0]), float(split_content[1]), float(split_content[2])))
+            vertices_processed.append((float(split_content[0])+x, float(split_content[1])+y, float(split_content[2])+z))
         for j in range(len(indices)):
             split_content = indices[j].split(" ")
             indices_processed.append((int(split_content[0]), int(split_content[1]), int(split_content[2])))

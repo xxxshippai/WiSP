@@ -55,6 +55,15 @@ class Figure:
         return vao
 
     def get_mesh(self):
+
+        if self.app.figure_loaded == 1:
+            # Load structures from file
+            if self.app.command_read[1] == "load":
+                self.app.file_name = self.app.command_read[2]
+                self.app.command_parsed[1] = self.app.command_read[3]
+                self.app.command_parsed[2] = self.app.command_read[4]
+                self.app.command_parsed[3] = self.app.command_read[5]
+
         # Origin coordinates
         x = float(self.app.command_parsed[1])
         y = float(self.app.command_parsed[2])
@@ -85,9 +94,7 @@ class Figure:
                                                                int(self.app.command_parsed[8]))
         elif self.app.figure_loaded == 1:
             # Load structures from file
-            if self.app.command_read[1] == "load":
-                file_name = self.app.command_read[2]
-                vertex_data = self.mesh.load_vertex_data(file_name, x, y, z)
+            vertex_data = self.mesh.load_vertex_data(self.app.file_name, x, y, z)
 
         if self.app.command_read[1] == "save":
             print("Saving")

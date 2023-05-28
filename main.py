@@ -40,6 +40,7 @@ class GraphicsEngine:
         self.command_parsed = "cuboid 0 0 0 0 1 0 2 2 2"
         self.command_read = "cuboid 0 0 0 0 1 0 2 2 2"
         self.cached_vertex = ""
+        self.file_name = ""
         self.command_parsed = self.command.split_command(self.command_parsed)
         # Variables
         self.figure_color = glm.vec3(1, 0, 0)
