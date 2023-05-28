@@ -14,8 +14,6 @@ FIGURES SET TO BUTTONS HAVE PRESET DIMENSIONS AND POSITIONS
 
 Main commands:
 "figure" "origin position" "rotation" "dimensions" - main figure creation command
-load "file" "origin position" - load figure from file
-save "file" - save figure to file
 
 Subcommands:
 - rotate moving "rotation vector" - continuous rotation  on set axis
@@ -24,20 +22,25 @@ Subcommands:
 - color "rgb vector" - change figure color
 - figure "figure type" - change figure without changing dimesions
 - camera "perspective 1/ortho 2" "NEAR" "FAR" - change projection type as well as near and far parameters  
+- load "file" "origin position" - load figure from file
+- save "file" - save figure to file
 
-Saved files formatting:\n
-Each file contains 3 different lists.\n
-1st list is a list of vertices including coordinates of each vertice.\n
-2nd list is a list of indices including vertices making up each indice.\n
-3rd list contains RGB color value of saved figure.\n
+Saved files formatting:
+Each file contains 3 different lists.
+- 1st list is a list of vertices including coordinates of each vertice.
+- 2nd list is a list of indices including vertices making up each indice.
+- 3rd list contains RGB color value of saved figure.
 
-Below is an example of how saved file should look:\n
-vertice1 " vertice2 " vertice3 # indice1 " indice2 " indice3 # color\n
-\# is a symbol that splits string into main lists of vertices, indices and color.\n
-" is a symbol that splits each of the main lists into sublists of coordinates.\n
+Below is an example of how saved file should look:
+vertice1 " vertice2 " vertice3 # indice1 " indice2 " indice3 # color
+- \# is a symbol that splits string into main lists of vertices, indices and color.
+- " is a symbol that splits each of the main lists into sublists of coordinates.
 
-Sublists of vertices, indices and color are separated by spaces, so:\n
-eg. vertice1 = 1.0 1.0 1.0\n
-eg. indice1 = 1 2 3\n
+Sublists of vertices, indices and color are separated by spaces, so:
+- eg. vertice1 = 1.0 1.0 1.0
+- eg. indice1 = 1 2 3
 
-Vertices and color are saved as float values, while indices are integers.\n
+Vertices and color are saved as float values, while indices are integers.
+
+
+
