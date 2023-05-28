@@ -10,9 +10,8 @@ Keybinds:
 - W,A,S,D - camera movement
 - Mouse - camera pitch/yaw
 
-FIGURES SET TO BUTTONS HAVE PRESET DIMENSIONS AND POSITIONS
-
 Main commands:
+
 "figure" "origin position" "rotation" "dimensions" - main figure creation command
 
 Subcommands:
