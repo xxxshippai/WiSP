@@ -25,9 +25,19 @@ Subcommands:
 - figure "figure type" - change figure without changing dimesions
 - camera "perspective 1/ortho 2" "NEAR" "FAR" - change projection type as well as near and far parameters  
 
-Saved files format:
-"Indices""Vertices""Color"
-Both indices and vertices are lists of vec3 elements, each of saved data looking like this:
-""x1,y1,z1""x2,y2,z2"..."
-The lists of elements are read by shlex
-Color is a single vec3 element represented by floats
+Saved files formatting:
+Each file contains 3 different lists.
+1st list is a list of vertices including coordinates of each vertice.
+2nd list is a list of indices including vertices making up each indice.
+3rd list contains RGB color value of saved figure.
+
+Below is an example of how saved file should look:
+vertice1 " vertice2 " vertice3 # indice1 " indice2 " indice3 # color
+\# is a symbol that splits string into main lists of vertices, indices and color.
+" is a symbol that splits each of the main lists into sublists of coordinates.
+
+Sublists of vertices, indices and color are separated by spaces, so:
+eg. vertice1 = 1.0 1.0 1.0
+eg. indice1 = 1 2 3
+
+Vertices and color are saved as float values, while indices are integers.
